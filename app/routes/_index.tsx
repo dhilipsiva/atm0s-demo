@@ -1,48 +1,50 @@
+import React, { useEffect, useState } from "react";
 import type { MetaFunction } from "@remix-run/node";
+import { generate_random_token } from "../actions/token";
+import Content from "./content";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "New Remix App" },
-    { name: "description", content: "Welcome to Remix!" },
+    { title: "Atm0s Demo App" },
+    { name: "description", content: "Welcome to Atm0s Demo!" },
   ];
 };
 
-export default function Index() {
-  return (
-    <div className="font-sans p-4">
-      <h1 className="text-3xl">Welcome to Remix</h1>
-      <ul className="list-disc mt-4 pl-6 space-y-2">
-        <li>
-          <a
-            className="text-blue-700 underline visited:text-purple-900"
-            target="_blank"
-            href="https://remix.run/start/quickstart"
-            rel="noreferrer"
-          >
-            5m Quick Start
-          </a>
-        </li>
-        <li>
-          <a
-            className="text-blue-700 underline visited:text-purple-900"
-            target="_blank"
-            href="https://remix.run/start/tutorial"
-            rel="noreferrer"
-          >
-            30m Tutorial
-          </a>
-        </li>
-        <li>
-          <a
-            className="text-blue-700 underline visited:text-purple-900"
-            target="_blank"
-            href="https://remix.run/docs"
-            rel="noreferrer"
-          >
-            Remix Docs
-          </a>
-        </li>
-      </ul>
-    </div>
-  );
-}
+const IndexComponent = () => {
+  const [room, setRoom] = useState<string | null>(null);
+  const [peer, setPeer] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      try {
+        const [room, peer, token] = await generate_random_token();
+        setRoom(room);
+        setPeer(peer);
+        setToken(token);
+      } catch (error) {
+        console.log("FREAKING ERROR HAPPENED!");
+        console.log(error);
+        setError(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchToken();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  return <Content room={room!} peer={peer!} token={token!} />;
+};
+
+export default IndexComponent;

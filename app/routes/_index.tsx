@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import type { MetaFunction } from "@remix-run/node";
 import { generate_random_token } from "../actions/token";
 import Content from "./content";

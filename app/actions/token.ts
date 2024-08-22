@@ -41,7 +41,7 @@ export async function generate_token(
 
 export async function generate_random_token() {
   const now = new Date().getTime();
-  const room = "room-" + now;
+  const room = "demo-room";
   const peer = "peer-" + now;
   return [room, peer, await generate_token(room, peer)];
 }
